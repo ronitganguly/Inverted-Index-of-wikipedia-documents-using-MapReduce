@@ -31,3 +31,5 @@ Hadoop/MapReduce or Spark.  Based on this knowledge, we should now design two
 main components: (a) an “indexer” that precomputes and stores as much of the above information
 as we deem necessary, and (b) a query processor that uses said information to produce the list of
 top-10 best matches to arbitrary user-supplied queries. 
+
+## For further details, please read the https://github.com/ronitganguly/Inverted-Index-of-wikipedia-documents-using-MapReduce/blob/master/Inverted%20Index%20Report.pdf
