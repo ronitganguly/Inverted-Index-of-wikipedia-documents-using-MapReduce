@@ -33,3 +33,8 @@ as we deem necessary, and (b) a query processor that uses said information to pr
 top-10 best matches to arbitrary user-supplied queries. 
 
 ### For further details, please read the https://github.com/ronitganguly/Inverted-Index-of-wikipedia-documents-using-MapReduce/blob/master/Inverted%20Index%20Report.pdf
+
+### Important MapReduce concepts learned:
+1. Distributed cache: In this project, we are removing the stop words before indexing. So, a stop word file is provided to all the mappers.
+2. Custom writable class: This class also implements a compareTo method which compares the tokens from each other and then it compares the frequency of the token within those tokens(property of inverted indexes).
+3. Multiple outputs: Two files are being produced at the end. 
