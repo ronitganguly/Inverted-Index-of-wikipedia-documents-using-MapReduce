@@ -36,5 +36,6 @@ top-10 best matches to arbitrary user-supplied queries.
 
 ### Important MapReduce concepts learned:
 1. Distributed cache: In this project, we are removing the stop words before indexing. So, a stop word file is provided to all the mappers.
-2. Custom writable class: This class also implements a compareTo method which compares the tokens from each other and then it compares the frequency of the token within those tokens(property of inverted indexes).
-3. Multiple outputs: Two files are being produced at the end. 
+2. Value tagging: Since Mapper releases two types of outputs in this project, the reducer, comparator, partitioner have to know which kind of key they are facing currently. So, a special value is tagged to one kind of key in order to differentiate.
+3. Custom writable class: This class also implements a compareTo method which compares the tokens from each other and then it compares the frequency of the token within those tokens(property of inverted indexes).
+4. Multiple outputs: Two files are being produced at the end. 
