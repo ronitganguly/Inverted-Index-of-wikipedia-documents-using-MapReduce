@@ -40,3 +40,49 @@ top-10 best matches to arbitrary user-supplied queries.
 3. Custom writable class: This class also implements a compareTo method which compares the tokens from each other and then it compares the frequency of the token within those tokens(property of inverted indexes).
 4. Secondary sorting on composite keys.
 5. Multiple outputs: Two files are being produced at the end. 
+
+
+## Brief discussion on the plan of attack:
+
+### Mapper:
+
+1) The wikipedia file has several documents with their title, and looks like:
+\[\[Title]]
+
+passages...........
+..............
+.........
+
+2) Record reader is going to split on "\n\[\[". So, at a time, a mapper will have one document along with its title.
+
+3) Input format of mappers is TextInputFormat ie LongWritable and Text. Where Longwritable is the offset of the split and Text is the entire document along with the title.
+
+4) Using distributed cache we make the stop word file available to every mapper. 
+
+5) Mapper process includes a) removing of stopwords in setup method. b) Stemming using Porter stemmer. c) releasing outputs.
+
+6) Here, there are two types of outputs being emitted by the mapper: a) <CompositeKeyWritable, NullWritable> : <token title frequency, Null> b) <CompositeKeyWritable, NullWritable> : <docid doclength, Null>
+
+7) Two types of key-value pairs require some sort of value tagging to differentiate. So, second type of K-V has "|@|" value tagged in front.
+
+8) Also, two global counters are being maintained: doc length(total tokens) and total documents(which is 1 per mapper)
+
+### CompositeKeyWritable:
+
+It implements compareTo() method which allows *CustomGroupComparator* to compare the patitioned mapper outputs(only the first kind of k-v pair) like this:
+The composite key is : token docid frequency, so firstly, token is sorted then within each token, pretending docid and frequency as a single entity, frequecies are sorted.
+ex- unsorted: 'Apple' 'docid_1' 33
+              'Guava' 'docid_2' 10
+              'Apple' 'docid_9' 21
+              
+    sorted :  'Apple' 'docid_9' 21
+              'Apple' 'docid_1' 33
+              'Guava' 'docid_2' 10
+              
+ ### CustomPartitioner:
+ 
+ It simply makes sure that no matter what kind of key-value pair is this, all the K-V pair having the same token (if first kind of K-V pair) or having the same title (if second kind of K-V pair) get sent to the same reducer.
+ 
+ ### Reducer:
+ 
+ It does nothing but just writes into two types of files using multiple outputs in mapreduce concept. So, it simply gets the two types of outputs from the mapper and simply writes them in two different files.
