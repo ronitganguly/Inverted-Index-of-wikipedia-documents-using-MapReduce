@@ -47,10 +47,13 @@ top-10 best matches to arbitrary user-supplied queries.
 ### Mapper:
 
 1) The wikipedia file has several documents with their title, and looks like:
+
 \[\[Title]]
 
-passages...........\n
-..............\n
+passages...........
+
+..............
+
 .........
 
 2) Record reader is going to split on "\n\[\[". So, at a time, a mapper will have one document along with its title.
